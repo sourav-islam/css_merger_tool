@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Django stuff:
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Unit test / coverage reports
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+
+# mypy
+.mypy_cache/
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# logs
+logs/
+
+# dotenv files
+.env
+
+# Coverage and profiling
+.cache/
+

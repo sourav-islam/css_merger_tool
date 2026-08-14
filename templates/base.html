@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CSS Merger</title>
+  </head>
+  <body>
+    <header>
+      <h1>CSS Merger</h1>
+      {% if user.is_authenticated %}
+      <p>Welcome, {{ user.username }} |
+        <a href="{% url 'accounts:profile' %}">Profile</a> |
+        <a href="{% url 'accounts:logout' %}">Logout</a>
+      </p>
+      {% else %}
+      <p><a href="{% url 'accounts:login' %}">Login</a> | <a href="{% url 'accounts:register' %}">Register</a></p>
+      {% endif %}
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

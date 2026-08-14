@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSS Merger | Login</title>
+    <style>
+      :root {
+        --bg: #111821;
+        --bg-soft: #1a212d;
+        --panel: rgba(255, 255, 255, 0.02);
+        --panel-strong: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.18);
+        --text: #edf2f7;
+        --muted: #b7c1d0;
+        --primary: #69a9ff;
+        --primary-strong: #4f8df6;
+        --input-bg: rgba(255, 255, 255, 0.01);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 28px;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent 40%), var(--bg);
+      }
+
+      .shell {
+        width: min(1280px, 100%);
+        min-height: 760px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 28px;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.08fr 0.92fr;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.22);
+      }
+
+      .brand {
+        background: rgba(15, 20, 27, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px 54px 42px 52px;
+        border-right: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .brand-mark {
+        width: 62px;
+        height: 62px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2f5ad8, #1d3c7a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 28px;
+        border: 1px solid rgba(255,255,255,0.18);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        font-size: 0.9rem;
+        color: #eaf3ff;
+      }
+
+      .brand h1 {
+        margin: 0 0 28px;
+        font-weight: 300;
+        letter-spacing: -0.05em;
+        font-size: clamp(2.9rem, 5vw, 5rem);
+        line-height: 1.05;
+        color: #f0f5fb;
+      }
+
+      .features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+
+      .features li {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: clamp(1.1rem, 2vw, 2rem);
+        font-weight: 300;
+        color: var(--muted);
+      }
+
+      .feature-icon {
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.02);
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        color: #dbe8ff;
+      }
+
+      .form-panel {
+        background: rgba(28, 35, 43, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 24px;
+      }
+
+      .login-box {
+        width: min(540px, 100%);
+        padding: 28px 0;
+      }
+
+      .auth-toggle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .auth-toggle a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        border-radius: 12px;
+        font-size: 1.1rem;
+        padding: 16px 18px;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .auth-toggle .active {
+        background: rgba(255,255,255,0.06);
+      }
+
+      .system-label {
+        font-size: 0.88rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.7);
+        margin: 0 0 6px 0;
+        font-weight: 600;
+      }
+
+      .brand-mini {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 0 auto 18px;
+        padding: 7px 14px;
+        width: fit-content;
+        min-width: 250px;
+        border-radius: 8px;
+        background: rgba(24, 29, 36, 0.72);
+        border: 1px solid rgba(255,255,255,0.09);
+        color: rgba(255,255,255,0.9);
+      }
+
+      .brand-mini .mini-mark {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        background: linear-gradient(135deg, #2f5ad8, #1d3c7a);
+        border: 1px solid rgba(255,255,255,0.18);
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      label {
+        font-size: 0.95rem;
+        color: #c9d2df;
+        font-weight: 500;
+      }
+
+      input {
+        width: 100%;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 12px;
+        color: var(--text);
+        padding: 20px 18px;
+        font-size: 1.1rem;
+        outline: none;
+      }
+
+      input::placeholder {
+        color: rgba(214, 223, 235, 0.72);
+      }
+
+      input:focus {
+        border-color: rgba(105, 169, 255, 0.8);
+        box-shadow: 0 0 0 3px rgba(105, 169, 255, 0.18);
+      }
+
+      .password-wrap {
+        position: relative;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.12);
+        color: var(--text);
+        border-radius: 8px;
+        padding: 6px 8px;
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+
+      .forgot {
+        text-align: right;
+        margin-top: -4px;
+      }
+
+      .forgot a {
+        color: #69a9ff;
+        text-decoration: none;
+        font-size: 1.02rem;
+      }
+
+      .submit-btn {
+        margin-top: 6px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(180deg, var(--primary), var(--primary-strong));
+        color: #f4f8ff;
+        padding: 20px 18px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .register-link {
+        text-align: center;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      .register-link a {
+        color: #69a9ff;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      @media (max-width: 900px) {
+        .shell {
+          grid-template-columns: 1fr;
+          min-height: auto;
+          padding: 28px 22px;
+        }
+
+        .brand {
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="shell">
+        <section class="brand">
+          <div class="brand-mark">EB</div>
+          <h1>CSS merger</h1>
+
+          <ul class="features">
+            <li><span class="feature-icon">EB</span> Upload and compare multiple CSS files</li>
+            <li><span class="feature-icon">EB</span> Resolve conflicts with a chosen strategy</li>
+            <li><span class="feature-icon">EB</span> Full history of every merge job</li>
+          </ul>
+        </section>
+
+        <section class="form-panel">
+          <div class="login-box">
+            <div class="brand-mini">
+              <span class="mini-mark"></span>
+              <span class="system-label">CSS Merger Engine v1.0</span>
+            </div>
+
+            {% if messages %}
+              <div style="margin-bottom:8px;">
+                {% for message in messages %}
+                  <div style="color:#cfead8; background: rgba(34, 66, 41, 0.25); padding:8px 12px; border-radius:6px; margin-bottom:6px;">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="auth-toggle">
+              <a href="{% url 'accounts:login' %}" class="active">Log in</a>
+              <a href="{% url 'accounts:register' %}">Register</a>
+            </div>
+
+            <form method="post" action="{% url 'accounts:login' %}">
+              {% csrf_token %}
+              {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+              {% endif %}
+
+              {% if form.non_field_errors %}
+                <div style="color:#ffb5b5; margin-bottom:8px;">{{ form.non_field_errors }}</div>
+              {% endif %}
+
+              <div class="field">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                  <div style="color:#ffb5b5; margin-top:6px;">{{ form.username.errors }}</div>
+                {% endif %}
+              </div>
+
+              <div class="field">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                <div class="password-wrap">
+                  {{ form.password }}
+                  <button class="password-toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                {% if form.password.errors %}
+                  <div style="color:#ffb5b5; margin-top:6px;">{{ form.password.errors }}</div>
+                {% endif %}
+              </div>
+
+              <div class="forgot">
+                <a href="#">Forgot password?</a>
+              </div>
+
+              <button class="submit-btn" type="submit">Log in</button>
+
+              {% if form.errors %}
+                <div style="color:#ffb5b5; margin-top:8px; font-size:0.95rem;">
+                  Please correct the highlighted fields below.
+                </div>
+              {% endif %}
+            </form>
+
+            <div class="register-link">
+              Don't have an account? <a href="{% url 'accounts:register' %}">Register</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const toggleBtn = document.querySelector('.password-toggle');
+      const passwordInput = document.querySelector('#id_password');
+      toggleBtn.addEventListener('click', () => {
+        const show = passwordInput.type === 'password';
+        passwordInput.type = show ? 'text' : 'password';
+        toggleBtn.textContent = show ? 'Hide' : 'ER';
+      });
+    </script>
+    <script>
+      (function(){
+        const toggleBtn = document.querySelector('.password-toggle');
+        const passwordInput = document.querySelector('#id_password');
+        if (!toggleBtn || !passwordInput) return;
+        toggleBtn.addEventListener('click', () => {
+          const show = passwordInput.type === 'password';
+          passwordInput.type = show ? 'text' : 'password';
+          toggleBtn.textContent = show ? 'Hide' : 'Show';
+        });
+      })();
+    </script>
+  </body>
+</html>

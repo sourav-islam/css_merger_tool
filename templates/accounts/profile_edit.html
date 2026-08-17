@@ -1,9 +1,82 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Edit Profile</h2>
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
+<div class="page-header">
+  <h1 class="page-title">Edit profile</h1>
+  <p class="page-subtitle">Update your public information and account preferences.</p>
+</div>
+
+<div class="card">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.display_name.id_for_label }}">Display name</label>
+      <input
+        type="text"
+        name="display_name"
+        id="{{ form.display_name.id_for_label }}"
+        class="form-control"
+        placeholder="How should we address you?"
+        maxlength="150"
+        value="{{ form.display_name.value|default:'' }}"
+      >
+      {% if form.display_name.errors %}
+        <div class="messages" style="margin-top:8px;">
+          {% for err in form.display_name.errors %}
+            <div class="message message-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.bio.id_for_label }}">Bio</label>
+      <textarea
+        name="bio"
+        id="{{ form.bio.id_for_label }}"
+        class="form-control"
+        rows="5"
+        placeholder="A short introduction about yourself (optional)"
+      >{{ form.bio.value|default:'' }}</textarea>
+      {% if form.bio.errors %}
+        <div class="messages" style="margin-top:8px;">
+          {% for err in form.bio.errors %}
+            <div class="message message-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.avatar.id_for_label }}">Avatar</label>
+      {% if form.instance.avatar %}
+        <div style="margin-bottom:12px; display:flex; align-items:center; gap:14px;">
+          <img src="{{ form.instance.avatar.url }}" alt="Current avatar" style="width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid var(--border-color);">
+          <span style="color: var(--text-secondary); font-size:14px;">Current avatar</span>
+        </div>
+      {% endif %}
+      <input
+        type="file"
+        name="avatar"
+        id="{{ form.avatar.id_for_label }}"
+        class="form-control"
+        accept="image/*"
+        style="padding:10px 14px;"
+      >
+      {% if form.avatar.errors %}
+        <div class="messages" style="margin-top:8px;">
+          {% for err in form.avatar.errors %}
+            <div class="message message-error">{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top: 8px;">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

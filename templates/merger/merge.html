@@ -1,6 +1,121 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Start Merge</h2>
-<p>Upload form placeholder.</p>
+<div class="page-header">
+  <h1 class="page-title">Merge workspace</h1>
+  <p class="page-subtitle">Upload multiple CSS files and select a merge strategy to begin.</p>
+</div>
+
+<div class="card">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label">Upload CSS files</label>
+      <label class="file-drop-zone" id="dropZone">
+        <input type="file" id="fileInput" name="css_files" multiple accept=".css" style="display:none;">
+        <div class="file-drop-icon"></div>
+        <div class="file-drop-title">Drag &amp; drop CSS files here</div>
+        <p class="file-drop-text">or <span>browse to choose files</span></p>
+        <p class="file-drop-text" style="margin-top:6px;">Supports .css files only, max 10 files per merge</p>
+      </label>
+
+      <div class="file-list" id="fileList"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="strategy">Merge Strategy</label>
+      <select id="strategy" name="strategy" class="form-control">
+        <option value="prefer_style2" selected>Prefer Style 2 (later files override earlier)</option>
+        <option value="prefer_style1">Prefer Style 1 (earlier files win)</option>
+        <option value="safe">Safe (keep both, later wins on exact duplicates)</option>
+        <option value="aggressive">Aggressive (aggressive dedup + prefer latest)</option>
+      </select>
+      <span class="helptext">Determines how conflicting declarations are resolved when two files differ on the same selector+property.</span>
+    </div>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top: 8px;">
+      <button type="submit" class="btn btn-primary">Start merge</button>
+      <button type="reset" class="btn btn-secondary" id="resetBtn">Clear</button>
+    </div>
+  </form>
+</div>
+
+<script>
+(function() {
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const fileList = document.getElementById('fileList');
+  const resetBtn = document.getElementById('resetBtn');
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function renderFiles() {
+    fileList.innerHTML = '';
+    const files = Array.from(fileInput.files || []);
+    files.forEach(function(file, idx) {
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.innerHTML =
+        '<div class="file-item-name">' +
+          '<div class="file-item-icon">CSS</div>' +
+          '<div>' +
+            '<div class="file-item-title">' + file.name + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<span class="file-item-size">' + formatSize(file.size) + '</span>' +
+          '<button type="button" class="file-item-remove" data-idx="' + idx + '" aria-label="Remove">&times;</button>' +
+        '</div>';
+      item.querySelector('.file-item-remove').addEventListener('click', function() {
+        const dt = new DataTransfer();
+        Array.from(fileInput.files).forEach(function(f, i) {
+          if (i !== idx) dt.items.add(f);
+        });
+        fileInput.files = dt.files;
+        renderFiles();
+      });
+      fileList.appendChild(item);
+    });
+  }
+
+  dropZone.addEventListener('click', function(e) {
+    if (e.target.closest('.file-item-remove')) return;
+    fileInput.click();
+  });
+
+  dropZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', function() {
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const dt = new DataTransfer();
+    Array.from(fileInput.files || []).forEach(function(f) { dt.items.add(f); });
+    Array.from(e.dataTransfer.files || []).forEach(function(f) {
+      if (f.name.toLowerCase().endsWith('.css')) dt.items.add(f);
+    });
+    fileInput.files = dt.files;
+    renderFiles();
+  });
+
+  fileInput.addEventListener('change', renderFiles);
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      setTimeout(renderFiles);
+    });
+  }
+})();
+</script>
 {% endblock %}

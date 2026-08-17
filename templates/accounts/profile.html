@@ -1,12 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Profile: {{ user.username }}</h2>
-<p>Display name: {{ user.profile.display_name }}</p>
-<p>Email: {{ user.email }}</p>
-<p>Bio: {{ user.profile.bio }}</p>
-{% if user.profile.avatar %}
-  <p><img src="{{ user.profile.avatar.url }}" alt="avatar" width="120"></p>
-{% endif %}
-<p><a href="{% url 'accounts:profile_edit' %}">Edit profile</a></p>
+<div class="page-header">
+  <h1 class="page-title">User profile</h1>
+  <p class="page-subtitle">Manage your account information and preferences.</p>
+</div>
+
+<div class="profile-header card">
+  {% if user.profile.avatar %}
+  <img src="{{ user.profile.avatar.url }}" alt="avatar" class="profile-avatar-lg" style="object-fit:cover;">
+  {% else %}
+  <div class="profile-avatar-lg">{{ user.username|first|upper }}</div>
+  {% endif %}
+  <div>
+    <div class="profile-name">{{ user.profile.display_name|default:user.username }}</div>
+    <div class="profile-username">@{{ user.username }}
+      {% if user.email %}· {{ user.email }}{% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:20px;">
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:24px;">
+    <div>
+      <div class="form-label" style="margin-bottom:6px;">Display name</div>
+      <div style="font-size:16px; color: var(--text-primary); font-weight:500;">
+        {{ user.profile.display_name|default:"-" }}
+      </div>
+    </div>
+    <div>
+      <div class="form-label" style="margin-bottom:6px;">Email</div>
+      <div style="font-size:16px; color: var(--text-primary); font-weight:500;">
+        {{ user.email|default:"-" }}
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:24px;">
+    <div class="form-label" style="margin-bottom:6px;">Bio</div>
+    <div style="font-size:15px; color: var(--text-secondary); line-height:1.6; white-space:pre-wrap;">
+      {{ user.profile.bio|default:"No bio provided." }}
+    </div>
+  </div>
+
+  <div style="display:flex; gap:12px; flex-wrap:wrap;">
+    <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary">Edit profile</a>
+    <a href="{% url 'merger:dashboard' %}" class="btn btn-secondary">Back to dashboard</a>
+  </div>
+</div>
 {% endblock %}

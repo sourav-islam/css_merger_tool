@@ -1,6 +1,71 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Dashboard</h2>
-<p><a href="{% url 'merger:merge' %}">Start New Merge</a></p>
+<div class="welcome-section">
+  <h1 class="welcome-title">Welcome back, {{ welcome_name }}</h1>
+  <p class="welcome-subtitle">Here's a summary of your CSS merging activity.</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total files</div>
+    <div class="stat-value">{{ stats.total_files }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Conflicts<br>resolved</div>
+    <div class="stat-value">{{ stats.conflicts_resolved }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Duplicates<br>removed</div>
+    <div class="stat-value">{{ stats.duplicates_removed }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Completed<br>jobs</div>
+    <div class="stat-value">{{ stats.completed_jobs }}</div>
+  </div>
+</div>
+
+<div class="section-header">
+  <h2 class="section-title">Recent merges</h2>
+  <a href="{% url 'merger:history' %}" class="view-all-link">View all</a>
+</div>
+
+{% if recent_merges %}
+<div class="merge-list">
+  {% for merge in recent_merges %}
+  <div class="merge-item">
+    <div class="merge-info">
+      <div class="merge-id">#{{ merge.id }}</div>
+      <div class="merge-meta">
+        <span class="merge-files">{{ merge.files_text }}</span>
+        <span>·</span>
+        <span class="merge-strategy">{{ merge.strategy_label }}</span>
+      </div>
+    </div>
+    <div class="merge-status">
+      {% if merge.status == "completed" %}
+      <span class="status-badge status-success">Success</span>
+      {% elif merge.status == "review" %}
+      <span class="status-badge status-review">Review</span>
+      {% elif merge.status == "pending" or merge.status == "processing" %}
+      <span class="status-badge status-pending">Processing</span>
+      {% elif merge.status == "failed" %}
+      <span class="status-badge status-failed">Failed</span>
+      {% else %}
+      <span class="status-badge status-review">{{ merge.status|default:"Review"|title }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon"></div>
+  <h3 class="empty-state-title">No merge history yet</h3>
+  <p class="empty-state-text">Start your first CSS merge to see results here. Upload multiple CSS files and we'll detect duplicates, resolve conflicts, and produce a clean merged output.</p>
+  <a href="{% url 'merger:merge' %}" class="empty-state-cta">
+    Start your first merge
+  </a>
+</div>
+{% endif %}
 {% endblock %}

@@ -1,6 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Merge History</h2>
-<p>History placeholder.</p>
+<div class="page-header">
+  <h1 class="page-title">Merge History</h1>
+  <p class="page-subtitle">View every merge operation you've run and their outcomes.</p>
+</div>
+
+{% if history %}
+<div class="merge-list">
+  {% for merge in history %}
+  <div class="merge-item">
+    <div class="merge-info">
+      <div class="merge-id">#{{ merge.id }}</div>
+      <div class="merge-meta">
+        <span class="merge-files">{{ merge.files_text }}</span>
+        <span>·</span>
+        <span class="merge-strategy">{{ merge.strategy_label }}</span>
+        {% if merge.created_at %}
+        <span>·</span>
+        <span class="merge-strategy">{{ merge.created_at }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="merge-status">
+      {% if merge.status == "completed" %}
+      <span class="status-badge status-success">Success</span>
+      {% elif merge.status == "review" %}
+      <span class="status-badge status-review">Review</span>
+      {% elif merge.status == "pending" or merge.status == "processing" %}
+      <span class="status-badge status-pending">Processing</span>
+      {% elif merge.status == "failed" %}
+      <span class="status-badge status-failed">Failed</span>
+      {% else %}
+      <span class="status-badge status-review">{{ merge.status|default:"Review"|title }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon"></div>
+  <h3 class="empty-state-title">No merge history yet</h3>
+  <p class="empty-state-text">Once you start merging CSS files, every job will be listed here so you can revisit results and download previous outputs.</p>
+  <a href="{% url 'merger:merge' %}" class="empty-state-cta">Start your first merge</a>
+</div>
+{% endif %}
 {% endblock %}

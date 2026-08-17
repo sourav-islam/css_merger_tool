@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from .forms import UserRegisterForm, ProfileForm
 
 
@@ -32,3 +33,12 @@ def edit_profile(request):
     else:
         form = ProfileForm(instance=profile)
     return render(request, "accounts/profile_edit.html", {"form": form})
+
+
+def logout_view(request):
+    """Log out the user and redirect to the login page.
+
+    Accepts GET (and POST) so links in templates work.
+    """
+    logout(request)
+    return redirect("accounts:login")

@@ -39,28 +39,23 @@ class MergeService:
         if not parsed:
             return {"status": "failed", "message": "No readable CSS files were found."}
 
-        base = parsed[0]
+        merged = parsed[0]
+        all_conflicts = []
+
         for sheet in parsed[1:]:
-            _, conflicts = comparator.compare(base, sheet)
-            if conflicts:
-                for conflict in conflicts:
-                    if conflict.resolution is None:
-                        conflict.resolution = "b"
-            base = merger.merge(base, sheet, conflicts if "conflicts" in locals() else [])
+            _, sheet_conflicts = comparator.compare(merged, sheet)
+            all_conflicts.extend(sheet_conflicts)
 
-        if len(parsed) > 1:
-            _, conflicts = comparator.compare(parsed[0], parsed[1])
-            merged = merger.merge(parsed[0], parsed[1], conflicts)
-        else:
-            merged = parsed[0]
-            conflicts = []
+            for conflict in sheet_conflicts:
+                if conflict.resolution is None:
+                    conflict.resolution = "b"
 
+            merged = merger.merge(merged, sheet, sheet_conflicts)
+
+        conflicts = all_conflicts
         merged_css = writer.render(merged)
-        report_text = reporter.build_summary_report(parsed[0], parsed[1] if len(parsed) > 1 else parsed[0], merged, conflicts)
-        if len(parsed) > 1:
-            conflicts_text = reporter.build_conflicts_report(conflicts)
-        else:
-            conflicts_text = "No conflicts detected.\n"
+        report_text = reporter.build_summary_report(parsed[0], parsed[-1], merged, conflicts)
+        conflicts_text = reporter.build_conflicts_report(conflicts) if conflicts else "No conflicts detected.\n"
 
         job = MergeJob.objects.create(
             user=self.user,
@@ -69,6 +64,7 @@ class MergeService:
             total_files=len(input_files),
             duplicate_count=self._count_duplicates(parsed),
             conflict_count=len(conflicts),
+            merged_css=merged_css,
             started_at=datetime.now(timezone.utc),
             completed_at=datetime.now(timezone.utc),
         )

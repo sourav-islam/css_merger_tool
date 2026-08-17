@@ -36,7 +36,7 @@
   <h2 class="section-title">Detected Conflicts</h2>
   <div style="margin-top: 16px;">
     {% for conflict in conflicts %}
-    <div style="border-left: 3px solid #ff6b6b; padding: 12px; margin-bottom: 12px; background: #fff5f5;">
+    <div style="border-left: 3px solid #ff6b6b; padding: 12px; margin-bottom: 12px; background: #814949;">
       <div style="font-weight: 600; margin-bottom: 8px;">
         {{ conflict.selector }}
       </div>
@@ -44,10 +44,10 @@
         <strong>Property:</strong> {{ conflict.property_name }}
       </div>
       <div style="font-size: 13px; font-family: monospace; margin-bottom: 4px;">
-        <strong>File A:</strong> <span style="color: #d32f2f;">{{ conflict.value_a }}</span>
+        <strong>File A:</strong> <span style="color: black;">{{ conflict.value_a }}</span>
       </div>
       <div style="font-size: 13px; font-family: monospace;">
-        <strong>File B:</strong> <span style="color: #1976d2;">{{ conflict.value_b }}</span>
+        <strong>File B:</strong> <span style="color: black;">{{ conflict.value_b }}</span>
       </div>
       {% if conflict.resolution %}
       <div style="font-size: 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #ffe0e0;">
@@ -67,7 +67,7 @@
 <div class="card" style="margin-top: 24px;">
   <h2 class="section-title">Merged CSS Output</h2>
   <pre style="
-    background: #f5f5f5;
+    background: #814949;
     padding: 16px;
     border-radius: 4px;
     overflow-x: auto;

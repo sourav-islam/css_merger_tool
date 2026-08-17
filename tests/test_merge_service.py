@@ -60,6 +60,28 @@ def test_dashboard_uses_real_merge_statistics(client):
 
 
 @pytest.mark.django_db
+def test_run_merge_handles_more_than_two_css_files(tmp_path):
+    css_a = tmp_path / "a.css"
+    css_b = tmp_path / "b.css"
+    css_c = tmp_path / "c.css"
+    css_a.write_text("body { color: red; }\n", encoding="utf-8")
+    css_b.write_text("body { color: blue; }\n", encoding="utf-8")
+    css_c.write_text("body { color: green; }\n", encoding="utf-8")
+
+    user = get_user_model().objects.create_user(username="multimerge", email="multi@example.com", password="secret123")
+    service = MergeService(user)
+
+    result = service.run_merge([css_a, css_b, css_c], strategy="prefer_style2")
+
+    assert result["status"] == "completed"
+    assert result["job_id"] is not None
+    assert result["conflict_count"] >= 2
+    merged_output = Path(result["output_path"]).read_text(encoding="utf-8")
+    assert "green" in merged_output.lower()
+    assert MergeJob.objects.filter(user=user).count() == 1
+
+
+@pytest.mark.django_db
 def test_merge_view_post_with_files(client, tmp_path):
     """Test that the merge view POST handler processes files and creates a job."""
     css_a = tmp_path / "style1.css"

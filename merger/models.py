@@ -32,6 +32,7 @@ class MergeJob(models.Model):
     total_files = models.PositiveIntegerField(default=0)
     duplicate_count = models.PositiveIntegerField(default=0)
     conflict_count = models.PositiveIntegerField(default=0)
+    merged_css = models.TextField(blank=True, default="")
     output_file = models.FileField(upload_to="merged_css/%Y/%m/%d/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

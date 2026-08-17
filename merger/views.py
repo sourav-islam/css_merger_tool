@@ -104,13 +104,16 @@ def result(request, job_id):
     except MergeJob.DoesNotExist:
         return HttpResponseForbidden("Job not found or not authorized")
 
-    merged_css = ""
-    if job.output_file:
+    merged_css = job.merged_css.strip() if job.merged_css else ""
+    if not merged_css and job.output_file:
         try:
-            merged_css = job.output_file.read().decode("utf-8")
+            merged_css = job.output_file.read().decode("utf-8").strip()
         except Exception as e:
             logger.warning(f"Could not read output file: {e}")
             merged_css = "(Unable to read merged CSS)"
+
+    if not merged_css:
+        merged_css = "/* No merged CSS output available. */"
 
     conflicts = job.conflicts.all()
 

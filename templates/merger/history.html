@@ -9,7 +9,8 @@
 {% if history %}
 <div class="merge-list">
   {% for merge in history %}
-  <div class="merge-item">
+  <a href="{% url 'merger:result' merge.id %}" style="text-decoration: none; color: inherit;">
+  <div class="merge-item" style="cursor: pointer; transition: background-color 0.2s ease;">
     <div class="merge-info">
       <div class="merge-id">#{{ merge.id }}</div>
       <div class="merge-meta">
@@ -36,6 +37,7 @@
       {% endif %}
     </div>
   </div>
+  </a>
   {% endfor %}
 </div>
 {% else %}
@@ -46,4 +48,11 @@
   <a href="{% url 'merger:merge' %}" class="empty-state-cta">Start your first merge</a>
 </div>
 {% endif %}
+
+<style>
+.merge-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+</style>
 {% endblock %}
+

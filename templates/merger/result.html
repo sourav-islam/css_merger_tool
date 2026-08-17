@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Merge Result</h1>
+  <p class="page-subtitle">Job #{{ job.pk }} completed with {{ conflict_count }} conflict(s)</p>
+</div>
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+  <a href="{% url 'merger:merge' %}" class="btn btn-secondary">New Merge</a>
+  <a href="{% url 'merger:history' %}" class="btn btn-secondary">View History</a>
+  {% if job.output_file %}
+  <a href="{{ job.output_file.url }}" download="merged.css" class="btn btn-primary">Download Merged CSS</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div style="margin-bottom: 16px;">
+    <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+      <strong>Strategy:</strong> {{ job.strategy_label }}
+    </div>
+    <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+      <strong>Files Merged:</strong> {{ job.total_files }}
+    </div>
+    <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+      <strong>Duplicates Removed:</strong> {{ job.duplicate_count }}
+    </div>
+    <div style="font-size: 14px; color: #666;">
+      <strong>Conflicts Found:</strong> {{ job.conflict_count }}
+    </div>
+  </div>
+</div>
+
+{% if conflicts %}
+<div class="card" style="margin-top: 24px;">
+  <h2 class="section-title">Detected Conflicts</h2>
+  <div style="margin-top: 16px;">
+    {% for conflict in conflicts %}
+    <div style="border-left: 3px solid #ff6b6b; padding: 12px; margin-bottom: 12px; background: #fff5f5;">
+      <div style="font-weight: 600; margin-bottom: 8px;">
+        {{ conflict.selector }}
+      </div>
+      <div style="font-size: 13px; font-family: monospace; margin-bottom: 4px;">
+        <strong>Property:</strong> {{ conflict.property_name }}
+      </div>
+      <div style="font-size: 13px; font-family: monospace; margin-bottom: 4px;">
+        <strong>File A:</strong> <span style="color: #d32f2f;">{{ conflict.value_a }}</span>
+      </div>
+      <div style="font-size: 13px; font-family: monospace;">
+        <strong>File B:</strong> <span style="color: #1976d2;">{{ conflict.value_b }}</span>
+      </div>
+      {% if conflict.resolution %}
+      <div style="font-size: 12px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #ffe0e0;">
+        <strong>Resolution:</strong> Kept value from File {{ conflict.resolution|upper }}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="card" style="margin-top: 24px; text-align: center; padding: 32px;">
+  <p style="color: #27ae60; font-weight: 600;">✓ No conflicts detected! Merge completed successfully.</p>
+</div>
+{% endif %}
+
+<div class="card" style="margin-top: 24px;">
+  <h2 class="section-title">Merged CSS Output</h2>
+  <pre style="
+    background: #f5f5f5;
+    padding: 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 12px;
+    max-height: 500px;
+  ">{{ merged_css }}</pre>
+</div>
+{% endblock %}
